@@ -1,0 +1,106 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package exercises;
+import java.awt.event.*;
+import javax.swing.border.*;
+import javax.swing.*;
+import java.awt.*;
+/**
+ *
+ * @author Celestine Akpanoko WIUC/09/0345
+ */
+public class Wiuc090345_e1_Improved extends JFrame{
+     public static void main (String [] args){
+        new Wiuc090345_e1_Improved();
+    }
+    private JTextField field = new JTextField();
+    private JButton addButton = new JButton("Add");
+    private JButton clrButton = new JButton("Clear");
+    private JList lstNames;
+    private DefaultListModel model = new DefaultListModel();
+    private JButton cntButton = new JButton("Count");
+    //The class's constructor
+    public Wiuc090345_e1_Improved(){
+        setTitle("Hello Swing Exercise"); //frame title
+        setSize(500, 300); //frame size on default
+        setDefaultCloseOperation(EXIT_ON_CLOSE); //operation when the X button is click
+        addListeners(); // calls method that assigns functionalities to window's buttons
+        createWindow(); // calls method to create components on window
+        setVisible(true); // defines the window must be appear on the screen
+    }
+    // a method of classe Exercise1 that creates panels
+    private void createWindow(){
+        //corresponding to the size of the components
+        JPanel panel = new JPanel(new BorderLayout(5,5));// panel, an instance of JPanel with a layout manager initilized
+        panel.setBorder(new EmptyBorder(10, 10, 10, 10));//create margins on all corners
+        panel.add(createTop(), BorderLayout.NORTH);// places createTop at the north of panel 
+        panel.add(createBottom(), BorderLayout.SOUTH);//places createBottom at the north of panel
+        panel.add(createCenter());
+        add(panel); //places panel in the center of the window before adding createTop,Bottom,andCenter methods
+    }
+    // method of class Exercise1 called createLabel(); it defines the sizes of the labels
+   
+    //the northern part of the window
+    private JPanel createTop(){
+        JPanel panel = new JPanel(new BorderLayout(10, 10)); //the parameters in the border layout specify spaces between components
+        JLabel label = new JLabel("Enter a name: ");
+        panel.add(label, BorderLayout.WEST); //label to the left(west)
+        panel.add(addButton, BorderLayout.EAST);// button to the right(east)
+        panel.add(field);//text field at the center
+        return panel;
+    }
+    //the center of the window
+    private JPanel createCenter(){
+        lstNames = new JList(model);//model which holds data to be displayed
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.add(new JScrollPane(lstNames));//places list box in the panel, encaplsulate with JScrollPane for scrolling
+        return panel;
+    }
+    //creates the south panel
+    private JPanel createBottom(){
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT)); //aligns clear button component to the right bottom
+        cntButton.setPreferredSize(new Dimension(80,27));
+        clrButton.setPreferredSize(new Dimension(80,27));
+        panel.add(cntButton);
+        panel.add(clrButton);
+        return panel;
+    }
+    private void addListeners(){
+        addButton.addActionListener(new AddAction()); // addAddListener is a method of JButton class. 
+        //this method refers to the instance variable of Exercise1, it is possible because AddAction is an inner class.
+        clrButton.addActionListener((ActionEvent e) -> {
+            if (JOptionPane.showConfirmDialog(ExerciseOneImproved.this, 
+                "Are you sure you want to delete this?","Warning",
+                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)  == JOptionPane.YES_OPTION)model.clear();
+        // similar to the add button but functions differently, so
+        //an anonymous class is created for a different function for the clear button.(turned into lambda)
+        } );
+        cntButton.addActionListener(new CountAction());
+    }
+    //events handler
+    class AddAction implements ActionListener{ //a class AddAction that implements an interface ActionListener in a class Exercise1
+        public void actionPerformed(ActionEvent e){//defines action to be performed
+            String name = field.getText().trim();//obtain string from text field and assigns to name 
+            if (name.length() > 0){ //checks if name is not empty
+                model.addElement(name); //adds name to list box
+                field.setText("");//clears the text field
+                field.requestFocus();// set cursor on text field for the next name
+            }
+        }
+        //AddAction implements the interface ActionListener means that an object of type AddAction
+        //can be use as a listener of object button.
+    }
+    class CountAction implements ActionListener{
+        public void actionPerformed(ActionEvent e){
+            JOptionPane.showMessageDialog(//msg dialog takes in 4 parameters over here; 2 are required but the other not really
+                    /*parent of child ->*/ExerciseOneImproved.this, 
+                    /*text to be display ->*/"You have entered " + model.getSize() + " names", 
+                    /*Title of dialog ->*/"Message", 
+                    /*message icon->*/JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+}
+    
